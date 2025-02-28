@@ -50,7 +50,7 @@ def getProducts(request):
 
 @api_view(['GET'])
 def getTopProducts(request):
-    products = Product.objects.filter(rating__gte=4).order_by('-rating')[0:5]
+    products = Product.objects.filter(rating__gte=4).order_by('-rating')[:10]
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
@@ -62,6 +62,19 @@ def getProduct(request, pk):
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
 
+# Get 8 latest products products
+@api_view(['GET'])
+def getLatestProducts(request):
+    # Use 'createdAt' instead of 'created_at'
+    products = Product.objects.all().order_by('-createdAt')[:12]
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getAllCategories(request):
+    categories = Product.objects.values('category').distinct()
+    category_list = [category['category'] for category in categories]
+    return Response({'categories': category_list})
 
 # Create a new Product
 @api_view(['POST'])

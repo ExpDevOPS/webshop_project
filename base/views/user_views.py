@@ -18,6 +18,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 # Local Import 
 from base.models import *
 from base.serializers import UserSerializer,UserSerializerWithToken
+from base.send_email import send_email
 
 
 
@@ -72,6 +73,15 @@ def registerUser(request):
             username = data['email'],
             password = make_password(data['password']),
         )
+
+        try:
+            # Send confirmation email
+            email = user.username  
+            subject = "Welcome to Our Service}"
+            body = "Thank you for registering with us!"
+            email_response = send_email(email, subject, body)
+        except:
+            pass
 
         serializer = UserSerializerWithToken(user,many=False)
         return Response(serializer.data)
