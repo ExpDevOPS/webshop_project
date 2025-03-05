@@ -1,0 +1,30 @@
+# version: '3.8'
+
+# services:
+#   backend:
+#     build:
+#       context: .  # Root directory where Dockerfile is located
+#       dockerfile: Dockerfile
+#     working_dir: /app  # Ensures the container starts in the correct directory
+#     volumes:
+#       - .:/app  # Mount local project folder into /app inside the container
+#     ports:
+#       - "8001:8000"  # Expose Django on port 8001
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .  # Root directory where Dockerfile is located
+      dockerfile: Dockerfile
+    working_dir: /app  # Ensures the container starts in the correct directory
+    volumes:
+      - .:/app  # Mount local project folder into /app inside the container
+      - ./db.sqlite3:/app/db.sqlite3
+    ports:
+      - "8000:8000"  # Expose Django on port 8001
+    command: >
+      sh -c "python manage.py makemigrations --noinput &&
+             python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
